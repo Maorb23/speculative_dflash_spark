@@ -1,0 +1,74 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# Virtual environments
+.venv/
+venv/
+env/
+ENV/
+
+# Local environment files / secrets
+.env
+.env.*
+!.env.example
+
+# Benchmark outputs
+results/*
+!results/.gitkeep
+*.jsonl.tmp
+*.log
+logs/
+
+# Weights & Biases
+wandb/
+.wandb/
+
+# Hugging Face / model caches
+.cache/
+hf_cache/
+huggingface/
+models/
+checkpoints/
+*.safetensors
+*.bin
+*.pt
+*.pth
+*.ckpt
+
+# Dataset caches
+datasets_cache/
+data/cache/
+
+# GPU / profiling artifacts
+nsys-rep/
+*.nsys-rep
+*.qdrep
+*.sqlite
+profile/
+profiles/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Editor / IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Build / packaging
+build/
+dist/
+*.egg-info/
+
+# Jupyter
+.ipynb_checkpoints/
