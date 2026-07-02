@@ -20,14 +20,16 @@ ENV/
 .env.*
 !.env.example
 
-# Benchmark outputs
-results/*
-!results/.gitkeep
-*.jsonl.tmp
+# Keep benchmark artifacts/results trackable
+# Do NOT ignore results/*.json, results/*.txt, prompts.jsonl, etc.
+results/.gitkeep
+
+# Temporary / noisy logs only
 *.log
 logs/
+*.jsonl.tmp
 
-# Weights & Biases
+# Weights & Biases local files
 wandb/
 .wandb/
 

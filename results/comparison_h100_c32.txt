@@ -1,0 +1,15 @@
+mode     | prompts | max_new_tokens | concurrency | total_output_tokens | wall_time_s | output_tok_s | p50_latency | p95_latency | speedup
+---------+---------+----------------+-------------+---------------------+-------------+--------------+-------------+-------------+--------
+baseline | 100     | 128            | 32          | 12800               | 3.186       | 4017.917     | 0.752       | 0.998       | 1.000  
+dflash   | 100     | 128            | 32          | 12800               | 2.960       | 4324.385     | 0.714       | 1.154       | 1.076  
+
+=== Key comparison ===
+baseline output tok/s: 4017.917
+dflash output tok/s:   4324.385
+speedup:              1.076
+baseline p50 latency: 0.752
+dflash p50 latency:   0.714
+baseline p95 latency: 0.998
+dflash p95 latency:   1.154
+latency ratio p50:    0.949
+latency ratio p95:    1.156

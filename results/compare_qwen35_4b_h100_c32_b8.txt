@@ -1,0 +1,16 @@
+mode     | prompts | max_new_tokens | concurrency | total_output_tokens | wall_time_s | output_tok_s | p50_latency | p95_latency | speedup
+---------+---------+----------------+-------------+---------------------+-------------+--------------+-------------+-------------+--------
+baseline | 100     | 128            | 32          | 12800               | 5.448       | 2349.324     | 1.394       | 2.182       | 1.000  
+dflash   | 100     | 128            | 32          | 12800               | 3.340       | 3832.692     | 0.922       | 1.376       | 1.631  
+
+=== Key comparison ===
+baseline output tok/s: 2349.324
+dflash output tok/s:   3832.692
+speedup:              1.631
+baseline p50 latency: 1.394
+dflash p50 latency:   0.922
+baseline p95 latency: 2.182
+dflash p95 latency:   1.376
+latency ratio p50:    0.662
+latency ratio p95:    0.631
+W&B run URL: https://wandb.ai/maorblumberg-tel-aviv-university/dflash-benchmark/runs/agyb6tq8
