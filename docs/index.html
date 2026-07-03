@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>DFlash Qwen 4B Benchmark</title>
+    <meta name="description" content="Interactive dashboard for baseline vs DFlash speculative decoding benchmarks.">
+    <link rel="stylesheet" href="assets/styles.css">
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="hero">
+        <div class="hero-inner">
+          <p class="eyebrow">DFlash Benchmark · updated <span id="updated">loading</span></p>
+          <h1>Baseline vs DFlash serving for Qwen 4B</h1>
+          <p class="lede" id="headline">Loading benchmark summary...</p>
+          <div class="hero-actions">
+            <a class="button primary" href="#runs">Explore Runs</a>
+            <a class="button" href="data/summary.json">Summary JSON</a>
+            <a class="button" href="https://huggingface.co/z-lab/Qwen3-4B-DFlash-b16">DFlash Model</a>
+          </div>
+        </div>
+      </header>
+
+      <main>
+        <div class="section-inner">
+          <section aria-label="Summary metrics">
+            <div class="metric-grid">
+              <div class="metric">
+                <p class="metric-value" id="metric-best">n/a</p>
+                <p class="metric-label" id="metric-best-label">Best throughput</p>
+              </div>
+              <div class="metric">
+                <p class="metric-value" id="metric-speedup">n/a</p>
+                <p class="metric-label">DFlash speedup</p>
+              </div>
+              <div class="metric">
+                <p class="metric-value" id="metric-runs">0</p>
+                <p class="metric-label">Tracked runs</p>
+              </div>
+              <div class="metric">
+                <p class="metric-value" id="metric-ok">0/0</p>
+                <p class="metric-label">OK / failed</p>
+              </div>
+            </div>
+          </section>
+
+          <section id="runs" class="split">
+            <div class="panel">
+              <h2>Output Throughput</h2>
+              <p class="small">Output tokens/sec from result JSON summaries. Paste baseline and DFlash JSON files below to update the view locally.</p>
+              <div class="controls">
+                <select id="framework-filter" aria-label="Filter by framework"></select>
+                <select id="mode-filter" aria-label="Filter by mode"></select>
+                <input id="search" type="search" placeholder="Search model, profile, notes" aria-label="Search runs">
+              </div>
+              <div class="chart-wrap">
+                <div id="throughput-chart" class="bar-chart"></div>
+              </div>
+            </div>
+
+            <div class="panel">
+              <h2>Run Details</h2>
+              <div id="run-list" class="run-list"></div>
+            </div>
+          </section>
+
+          <section class="split">
+            <div class="panel">
+              <h2>Pipeline</h2>
+              <div id="timeline" class="timeline"></div>
+            </div>
+            <div class="panel">
+              <h2>Operating Notes</h2>
+              <ol id="decisions" class="decision-list"></ol>
+            </div>
+          </section>
+
+          <section>
+            <div class="dropzone">
+              <h2>Import Benchmark JSON</h2>
+              <p class="small">Paste one or more JSON files produced by <code>scripts/bench_openai_server.py</code>. The dashboard reads <code>config</code>, <code>summary</code>, and <code>requests</code>; imported data stays in your browser only.</p>
+              <textarea id="json-input" spellcheck="false" placeholder='{"config": {"mode": "baseline"}, "summary": {"output_tokens_per_second": 100}, "requests": []}'></textarea>
+              <div class="import-actions">
+                <button id="import-json" class="primary" type="button">Import JSON</button>
+                <button id="clear-import" type="button">Clear</button>
+                <span id="import-message" class="small"></span>
+              </div>
+            </div>
+          </section>
+        </div>
+      </main>
+
+      <footer class="site-footer">
+        <p>Static GitHub Pages dashboard for this repo. Keep raw outputs in ignored <code>results/</code>, W&amp;B, or artifact storage; publish compact summaries here.</p>
+      </footer>
+    </div>
+    <script src="assets/app.js"></script>
+  </body>
+</html>

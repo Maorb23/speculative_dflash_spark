@@ -1,0 +1,72 @@
+{
+  "updated": "2026-07-03",
+  "project": "DFlash Qwen 4B Benchmark",
+  "headline": "A compact benchmark harness for comparing Qwen target-only serving against DFlash speculative serving through OpenAI-compatible SGLang or vLLM endpoints.",
+  "runs": [
+    {
+      "id": "planned-baseline-cheap",
+      "label": "Baseline server",
+      "mode": "baseline",
+      "framework": "sglang",
+      "profile": "cheap",
+      "model": "Qwen/Qwen3-4B",
+      "draft_model": null,
+      "hardware": "RTX 3090 / RTX 4090 class",
+      "status": "planned",
+      "output_tokens_per_second": null,
+      "p50_latency_s": null,
+      "p95_latency_s": null,
+      "total_output_tokens": null,
+      "notes": "Launch target-only serving first, then run scripts/bench_openai_server.py against the OpenAI-compatible endpoint."
+    },
+    {
+      "id": "planned-dflash-cheap",
+      "label": "DFlash server",
+      "mode": "dflash",
+      "framework": "sglang",
+      "profile": "cheap",
+      "model": "Qwen/Qwen3-4B",
+      "draft_model": "z-lab/Qwen3-4B-DFlash-b16",
+      "hardware": "RTX 3090 / RTX 4090 class",
+      "status": "planned",
+      "output_tokens_per_second": null,
+      "p50_latency_s": null,
+      "p95_latency_s": null,
+      "total_output_tokens": null,
+      "notes": "DFlash is a packaged speculator tied to the target model. Use BF16-capable GPUs; T4 is not the intended hardware."
+    }
+  ],
+  "milestones": [
+    {
+      "title": "Prompt generation",
+      "state": "ready",
+      "body": "scripts/make_prompts.py builds FineWeb-Edu prompt prefixes for repeatable benchmark inputs."
+    },
+    {
+      "title": "Target-only baseline",
+      "state": "ready",
+      "body": "scripts/launch_baseline.sh starts SGLang or vLLM target-only serving."
+    },
+    {
+      "title": "DFlash launch",
+      "state": "ready",
+      "body": "scripts/launch_dflash.sh starts target plus DFlash speculative serving."
+    },
+    {
+      "title": "OpenAI-compatible benchmark",
+      "state": "ready",
+      "body": "scripts/bench_openai_server.py measures latency, TTFT, output tokens/sec, per-request status, and W&B artifacts."
+    },
+    {
+      "title": "Result comparison",
+      "state": "ready",
+      "body": "scripts/compare_results.py compares baseline and DFlash JSON files and can log speedup ratios to W&B."
+    }
+  ],
+  "decisions": [
+    "Keep raw result files under ignored results/; publish compact summaries in docs/data/summary.json.",
+    "Use SGLang as the recommended first DFlash serving path; keep vLLM DFlash marked experimental.",
+    "Use cheap profile defaults for RTX-style GPUs before increasing memory, concurrency, or backend aggression.",
+    "Compare baseline and DFlash through the same OpenAI-compatible client script and the same prompts."
+  ]
+}
