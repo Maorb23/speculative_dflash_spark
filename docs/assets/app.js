@@ -56,31 +56,30 @@ function bestRun() {
     .sort((a, b) => b.output_tokens_per_second - a.output_tokens_per_second)[0];
 }
 
-function bestByMode(mode) {
+function bestSpeedupRun() {
   return [...runs()]
-    .filter((run) => run.mode === mode && asNumber(run.output_tokens_per_second) !== null)
-    .sort((a, b) => b.output_tokens_per_second - a.output_tokens_per_second)[0];
+    .filter((run) => run.mode === "dflash" && asNumber(run.speedup) !== null)
+    .sort((a, b) => b.speedup - a.speedup)[0];
 }
 
 function renderMetrics() {
   const best = bestRun();
-  const baseline = bestByMode("baseline");
-  const dflash = bestByMode("dflash");
-  const speedup = baseline && dflash
-    ? dflash.output_tokens_per_second / baseline.output_tokens_per_second
-    : null;
+  const bestSpeedup = bestSpeedupRun();
   const okCount = runs().filter((run) => run.status === "ok" || run.status === "success").length;
   const failedCount = runs().filter((run) => run.status === "failed" || run.status === "error").length;
 
+  document.querySelector("#metric-speedup").textContent = bestSpeedup
+    ? `${displayNumber(bestSpeedup.speedup)}x`
+    : "n/a";
+  document.querySelector("#metric-speedup-label").textContent = bestSpeedup
+    ? bestSpeedup.label
+    : "Best DFlash speedup";
   document.querySelector("#metric-best").textContent = best
     ? displayNumber(best.output_tokens_per_second, " tok/s")
     : "n/a";
   document.querySelector("#metric-best-label").textContent = best
     ? best.label
     : "No completed benchmark yet";
-  document.querySelector("#metric-speedup").textContent = speedup === null
-    ? "n/a"
-    : `${displayNumber(speedup)}x`;
   document.querySelector("#metric-runs").textContent = runs().length;
   document.querySelector("#metric-ok").textContent = `${okCount}/${failedCount}`;
 }
@@ -144,6 +143,16 @@ function renderRuns() {
           const draft = run.draft_model ? ` Draft: ${run.draft_model}.` : "";
           const p50 = displayNumber(run.p50_latency_s, "s p50");
           const p95 = displayNumber(run.p95_latency_s, "s p95");
+          const speedup = asNumber(run.speedup) === null ? "" : ` · ${displayNumber(run.speedup)}x speedup`;
+          const shape = [
+            run.hardware,
+            run.prompts ? `${run.prompts} prompts` : null,
+            run.max_new_tokens ? `${run.max_new_tokens} max tokens` : null,
+            run.concurrency ? `c${run.concurrency}` : null
+          ].filter(Boolean).join(" · ");
+          const wandb = run.wandb_url
+            ? `<a class="inline-link" href="${run.wandb_url}">W&B run</a>`
+            : "";
           return `
             <article class="run-row">
               <div class="run-head">
@@ -155,10 +164,11 @@ function renderRuns() {
               </div>
               <p class="run-notes">${run.notes}</p>
               <p class="run-meta">
-                ${displayNumber(run.output_tokens_per_second, " tok/s")} ·
+                ${displayNumber(run.output_tokens_per_second, " tok/s")}${speedup} ·
                 ${p50} · ${p95} ·
                 ${displayNumber(run.total_output_tokens, " tokens")}
               </p>
+              <p class="run-meta">${shape}${wandb ? ` · ${wandb}` : ""}</p>
             </article>
           `;
         })
@@ -218,6 +228,9 @@ function normalizeBenchmarkResult(raw, index = 0) {
     draft_model: config.draft_model ?? config.draftModel ?? raw.draft_model ?? null,
     hardware: summary.gpu_name ?? raw.hardware ?? "imported",
     status,
+    prompts: summary.num_prompts ?? null,
+    max_new_tokens: config.max_new_tokens ?? null,
+    concurrency: config.concurrency ?? null,
     output_tokens_per_second: summary.output_tokens_per_second ?? null,
     p50_latency_s: summary.p50_latency_s ?? null,
     p95_latency_s: summary.p95_latency_s ?? null,

@@ -112,6 +112,11 @@ button.primary {
   text-decoration: none;
 }
 
+.inline-link {
+  color: var(--accent);
+  text-decoration: none;
+}
+
 main {
   padding: 28px 24px 64px;
 }

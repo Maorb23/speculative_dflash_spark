@@ -22,12 +22,13 @@ The site will be published at the repository GitHub Pages URL.
 
 ## Update Published Data
 
-After a benchmark run, copy compact metrics from:
+The dashboard currently publishes compact H100 comparison summaries from:
 
 ```text
-results/baseline.json
-results/dflash.json
+results/comparison_h100_c32.txt
+results/compare_qwen35_4b_h100_c32_b8.txt
 ```
 
-into `docs/data/summary.json`. Do not commit large result directories or model
-artifacts.
+After future benchmark runs, copy compact metrics from `results/*.json` or
+`results/*.txt` into `docs/data/summary.json`. Do not commit large result
+directories or model artifacts.

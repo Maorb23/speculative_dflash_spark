@@ -12,7 +12,7 @@
       <header class="hero">
         <div class="hero-inner">
           <p class="eyebrow">DFlash Benchmark · updated <span id="updated">loading</span></p>
-          <h1>Baseline vs DFlash serving for Qwen 4B</h1>
+          <h1>Measured DFlash speedups on Qwen 4B</h1>
           <p class="lede" id="headline">Loading benchmark summary...</p>
           <div class="hero-actions">
             <a class="button primary" href="#runs">Explore Runs</a>
@@ -27,12 +27,12 @@
           <section aria-label="Summary metrics">
             <div class="metric-grid">
               <div class="metric">
-                <p class="metric-value" id="metric-best">n/a</p>
-                <p class="metric-label" id="metric-best-label">Best throughput</p>
+                <p class="metric-value" id="metric-speedup">n/a</p>
+                <p class="metric-label" id="metric-speedup-label">Best DFlash speedup</p>
               </div>
               <div class="metric">
-                <p class="metric-value" id="metric-speedup">n/a</p>
-                <p class="metric-label">DFlash speedup</p>
+                <p class="metric-value" id="metric-best">n/a</p>
+                <p class="metric-label" id="metric-best-label">Best throughput</p>
               </div>
               <div class="metric">
                 <p class="metric-value" id="metric-runs">0</p>
@@ -47,8 +47,8 @@
 
           <section id="runs" class="split">
             <div class="panel">
-              <h2>Output Throughput</h2>
-              <p class="small">Output tokens/sec from result JSON summaries. Paste baseline and DFlash JSON files below to update the view locally.</p>
+              <h2>Throughput And Speedup</h2>
+              <p class="small">H100 results are preloaded. Use filters to compare baseline and DFlash, then paste future GPU result JSONs below.</p>
               <div class="controls">
                 <select id="framework-filter" aria-label="Filter by framework"></select>
                 <select id="mode-filter" aria-label="Filter by mode"></select>
@@ -79,7 +79,7 @@
           <section>
             <div class="dropzone">
               <h2>Import Benchmark JSON</h2>
-              <p class="small">Paste one or more JSON files produced by <code>scripts/bench_openai_server.py</code>. The dashboard reads <code>config</code>, <code>summary</code>, and <code>requests</code>; imported data stays in your browser only.</p>
+              <p class="small">Paste one or more JSON files produced by <code>scripts/bench_openai_server.py</code>. Imported data stays in your browser only until you copy compact metrics into <code>docs/data/summary.json</code>.</p>
               <textarea id="json-input" spellcheck="false" placeholder='{"config": {"mode": "baseline"}, "summary": {"output_tokens_per_second": 100}, "requests": []}'></textarea>
               <div class="import-actions">
                 <button id="import-json" class="primary" type="button">Import JSON</button>
