@@ -76,24 +76,8 @@
             </div>
           </section>
 
-          <section>
-            <div class="dropzone">
-              <h2>Import Benchmark JSON</h2>
-              <p class="small">Paste one or more JSON files produced by <code>scripts/bench_openai_server.py</code>. Imported data stays in your browser only until you copy compact metrics into <code>docs/data/summary.json</code>.</p>
-              <textarea id="json-input" spellcheck="false" placeholder='{"config": {"mode": "baseline"}, "summary": {"output_tokens_per_second": 100}, "requests": []}'></textarea>
-              <div class="import-actions">
-                <button id="import-json" class="primary" type="button">Import JSON</button>
-                <button id="clear-import" type="button">Clear</button>
-                <span id="import-message" class="small"></span>
-              </div>
-            </div>
-          </section>
         </div>
       </main>
-
-      <footer class="site-footer">
-        <p>Static GitHub Pages dashboard for this repo. Keep raw outputs in ignored <code>results/</code>, W&amp;B, or artifact storage; publish compact summaries here.</p>
-      </footer>
     </div>
     <script src="assets/app.js"></script>
   </body>

@@ -336,34 +336,6 @@ input[type="search"] {
   line-height: 1.6;
 }
 
-.dropzone {
-  padding: 18px;
-}
-
-textarea {
-  width: 100%;
-  min-height: 180px;
-  resize: vertical;
-  border: 1px solid var(--line);
-  border-radius: 6px;
-  padding: 12px;
-  color: var(--text);
-  background: #111418;
-  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-  font-size: 13px;
-}
-
-.site-footer {
-  padding: 24px;
-  border-top: 1px solid var(--line);
-  color: var(--muted);
-}
-
-.site-footer p {
-  width: min(1180px, 100%);
-  margin: 0 auto;
-}
-
 @media (max-width: 820px) {
   .metric-grid,
   .split {

@@ -209,53 +209,6 @@ function renderAll() {
   renderDecisions();
 }
 
-function normalizeBenchmarkResult(raw, index = 0) {
-  const config = raw.config ?? {};
-  const summary = raw.summary ?? {};
-  const requests = raw.requests ?? [];
-  const failedRequests = requests.filter((request) => request.status && request.status !== "ok").length;
-  const mode = config.mode ?? raw.mode ?? "imported";
-  const status = failedRequests > 0 ? "error" : "ok";
-  const suffix = index ? ` ${index + 1}` : "";
-
-  return {
-    id: `import-${Date.now()}-${index}`,
-    label: raw.label ?? `${mode}${suffix}`,
-    mode,
-    framework: config.framework ?? raw.framework ?? "imported",
-    profile: config.profile ?? raw.profile ?? "unknown",
-    model: config.model ?? raw.model ?? "unknown",
-    draft_model: config.draft_model ?? config.draftModel ?? raw.draft_model ?? null,
-    hardware: summary.gpu_name ?? raw.hardware ?? "imported",
-    status,
-    prompts: summary.num_prompts ?? null,
-    max_new_tokens: config.max_new_tokens ?? null,
-    concurrency: config.concurrency ?? null,
-    output_tokens_per_second: summary.output_tokens_per_second ?? null,
-    p50_latency_s: summary.p50_latency_s ?? null,
-    p95_latency_s: summary.p95_latency_s ?? null,
-    total_output_tokens: summary.total_output_tokens ?? null,
-    notes: failedRequests
-      ? `${failedRequests} request(s) failed.`
-      : `Imported ${requests.length || "no"} request row(s) from bench_openai_server.py output.`
-  };
-}
-
-function importJson() {
-  const input = document.querySelector("#json-input");
-  const message = document.querySelector("#import-message");
-  try {
-    const parsed = JSON.parse(input.value);
-    const rawItems = Array.isArray(parsed) ? parsed : [parsed];
-    const imported = rawItems.map(normalizeBenchmarkResult);
-    state.data.runs = [...imported, ...runs()];
-    message.textContent = `Imported ${imported.length} run${imported.length === 1 ? "" : "s"}.`;
-    renderAll();
-  } catch (error) {
-    message.textContent = `Import failed: ${error.message}`;
-  }
-}
-
 function bindEvents() {
   document.querySelector("#framework-filter").addEventListener("change", (event) => {
     state.framework = event.target.value;
@@ -271,11 +224,6 @@ function bindEvents() {
     state.query = event.target.value;
     renderChart();
     renderRuns();
-  });
-  document.querySelector("#import-json").addEventListener("click", importJson);
-  document.querySelector("#clear-import").addEventListener("click", () => {
-    document.querySelector("#json-input").value = "";
-    document.querySelector("#import-message").textContent = "";
   });
 }
 
