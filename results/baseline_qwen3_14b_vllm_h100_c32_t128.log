@@ -1,0 +1,82 @@
+[transformers] PyTorch was not found. Models won't be available and only tokenizers, configuration and file/data utilities can be used.
+Installed versions:
+  torch: not installed
+  transformers: 5.14.1
+  sglang: not installed
+  vllm: not installed
+  wandb: 0.28.1
+CUDA available: None
+GPU name: NVIDIA H100 80GB HBM3
+wandb: [wandb.login()] Loaded credentials for https://api.wandb.ai from WANDB_API_KEY.
+wandb: Currently logged in as: maorblumberg (maorblumberg-tel-aviv-university) to https://api.wandb.ai. Use `wandb login --relogin` to force relogin
+wandb: setting up run 77di71ha
+wandb: Tracking run with wandb version 0.28.1
+wandb: Run data is saved locally in /home/ubuntu/speculative_dflash_spark/wandb/run-20260718_112947-77di71ha
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run elated-frost-17
+wandb: ⭐️ View project at https://wandb.ai/maorblumberg-tel-aviv-university/speculative-decoding-benchmark
+wandb: 🚀 View run at https://wandb.ai/maorblumberg-tel-aviv-university/speculative-decoding-benchmark/runs/77di71ha
+wandb: Detected [openai] in use.
+wandb: Use W&B Weave for improved LLM call tracing. Install Weave with `pip install weave` then add `import weave` to the top of your script.
+wandb: For more information, check out the docs at: https://weave-docs.wandb.ai
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Running 5 warmup requests...
+Benchmarking 100 prompts with concurrency=32...
+requests:   0%|          | 0/100 [00:00<?, ?it/s]requests:   1%|          | 1/100 [00:01<02:44,  1.67s/it]requests:  10%|█         | 10/100 [00:01<00:11,  7.64it/s]requests:  33%|███▎      | 33/100 [00:03<00:05, 11.99it/s]requests:  42%|████▏     | 42/100 [00:03<00:03, 16.08it/s]requests:  65%|██████▌   | 65/100 [00:05<00:02, 15.34it/s]requests:  78%|███████▊  | 78/100 [00:05<00:01, 20.72it/s]requests:  97%|█████████▋| 97/100 [00:06<00:00, 17.44it/s]requests: 100%|██████████| 100/100 [00:06<00:00, 15.29it/s]
+
+=== Summary ===
+wall_time_s: 6.545530367000538
+num_prompts: 100
+total_output_tokens: 12800
+output_tokens_per_second: 1955.5329029610089
+requests_per_second: 15.277600804382882
+mean_latency_s: 1.6965147584100122
+p50_latency_s: 1.708092158999989
+p90_latency_s: 1.7663638422000076
+p95_latency_s: 1.7709877921005954
+p99_latency_s: 1.7730002537496512
+error_count: 0
+success_count: 100
+mean_ttft_s: None
+p50_ttft_s: None
+p95_ttft_s: None
+
+Wrote result JSON to results/baseline_qwen3_14b_vllm_h100_c32_t128.json
+W&B run URL: https://wandb.ai/maorblumberg-tel-aviv-university/speculative-decoding-benchmark/runs/77di71ha
+wandb: uploading artifact run-77di71ha-requests; uploading artifact benchmark-baseline_qwen3_14b_vllm_h100_c32_t128; updating run metadata
+wandb: uploading artifact run-77di71ha-requests; uploading artifact benchmark-baseline_qwen3_14b_vllm_h100_c32_t128
+wandb: uploading artifact benchmark-baseline_qwen3_14b_vllm_h100_c32_t128
+wandb: uploading media/table/requests_1_aab20886523cf0ecb5e2.table.json; uploading output.log; uploading wandb-summary.json; uploading config.yaml
+wandb: uploading media/table/requests_1_aab20886523cf0ecb5e2.table.json; uploading output.log; uploading config.yaml
+wandb: uploading history steps 0-1, summary, console lines 6-26
+wandb: 
+wandb: Run history:
+wandb:              summary/error_count ▁
+wandb:           summary/mean_latency_s ▁
+wandb:              summary/num_prompts ▁
+wandb: summary/output_tokens_per_second ▁
+wandb:            summary/p50_latency_s ▁
+wandb:            summary/p90_latency_s ▁
+wandb:            summary/p95_latency_s ▁
+wandb:            summary/p99_latency_s ▁
+wandb:      summary/requests_per_second ▁
+wandb:            summary/success_count ▁
+wandb:                               +2 ...
+wandb: 
+wandb: Run summary:
+wandb:              summary/error_count 0
+wandb:           summary/mean_latency_s 1.69651
+wandb:              summary/num_prompts 100
+wandb: summary/output_tokens_per_second 1955.5329
+wandb:            summary/p50_latency_s 1.70809
+wandb:            summary/p90_latency_s 1.76636
+wandb:            summary/p95_latency_s 1.77099
+wandb:            summary/p99_latency_s 1.773
+wandb:      summary/requests_per_second 15.2776
+wandb:            summary/success_count 100
+wandb:                               +2 ...
+wandb: 
+wandb: 🚀 View run elated-frost-17 at: https://wandb.ai/maorblumberg-tel-aviv-university/speculative-decoding-benchmark/runs/77di71ha
+wandb: ⭐️ View project at: https://wandb.ai/maorblumberg-tel-aviv-university/speculative-decoding-benchmark
+wandb: Synced 5 W&B file(s), 1 media file(s), 4 artifact file(s) and 0 other file(s)
+wandb: Find logs at: ./wandb/run-20260718_112947-77di71ha/logs

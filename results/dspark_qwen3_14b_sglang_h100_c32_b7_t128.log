@@ -1,0 +1,82 @@
+[transformers] PyTorch was not found. Models won't be available and only tokenizers, configuration and file/data utilities can be used.
+Installed versions:
+  torch: not installed
+  transformers: 5.14.1
+  sglang: not installed
+  vllm: not installed
+  wandb: 0.28.1
+CUDA available: None
+GPU name: NVIDIA H100 80GB HBM3
+wandb: [wandb.login()] Loaded credentials for https://api.wandb.ai from WANDB_API_KEY.
+wandb: Currently logged in as: maorblumberg (maorblumberg-tel-aviv-university) to https://api.wandb.ai. Use `wandb login --relogin` to force relogin
+wandb: setting up run 18u0fbw0
+wandb: Tracking run with wandb version 0.28.1
+wandb: Run data is saved locally in /home/ubuntu/speculative_dflash_spark/wandb/run-20260718_113724-18u0fbw0
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run avid-music-21
+wandb: ⭐️ View project at https://wandb.ai/maorblumberg-tel-aviv-university/speculative-decoding-benchmark
+wandb: 🚀 View run at https://wandb.ai/maorblumberg-tel-aviv-university/speculative-decoding-benchmark/runs/18u0fbw0
+wandb: Detected [openai] in use.
+wandb: Use W&B Weave for improved LLM call tracing. Install Weave with `pip install weave` then add `import weave` to the top of your script.
+wandb: For more information, check out the docs at: https://weave-docs.wandb.ai
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Running 5 warmup requests...
+Benchmarking 100 prompts with concurrency=32...
+requests:   0%|          | 0/100 [00:00<?, ?it/s]requests:   1%|          | 1/100 [00:00<01:21,  1.22it/s]requests:   3%|▎         | 3/100 [00:00<00:25,  3.79it/s]requests:  10%|█         | 10/100 [00:01<00:06, 13.37it/s]requests:  16%|█▌        | 16/100 [00:01<00:04, 20.63it/s]requests:  26%|██▌       | 26/100 [00:01<00:02, 33.10it/s]requests:  31%|███       | 31/100 [00:01<00:01, 34.96it/s]requests:  36%|███▌      | 36/100 [00:02<00:03, 20.38it/s]requests:  40%|████      | 40/100 [00:02<00:02, 21.52it/s]requests:  46%|████▌     | 46/100 [00:02<00:02, 26.75it/s]requests:  52%|█████▏    | 52/100 [00:02<00:01, 31.30it/s]requests:  57%|█████▋    | 57/100 [00:02<00:01, 30.84it/s]requests:  63%|██████▎   | 63/100 [00:02<00:01, 33.28it/s]requests:  67%|██████▋   | 67/100 [00:03<00:01, 21.44it/s]requests:  70%|███████   | 70/100 [00:03<00:01, 21.73it/s]requests:  74%|███████▍  | 74/100 [00:03<00:01, 24.51it/s]requests:  82%|████████▏ | 82/100 [00:03<00:00, 34.49it/s]requests:  87%|████████▋ | 87/100 [00:03<00:00, 35.26it/s]requests:  92%|█████████▏| 92/100 [00:03<00:00, 37.73it/s]requests:  97%|█████████▋| 97/100 [00:03<00:00, 35.19it/s]requests: 100%|██████████| 100/100 [00:04<00:00, 24.59it/s]
+
+=== Summary ===
+wall_time_s: 4.069531914000436
+num_prompts: 100
+total_output_tokens: 12800
+output_tokens_per_second: 3145.3248851456556
+requests_per_second: 24.572850665200434
+mean_latency_s: 1.1436493739399884
+p50_latency_s: 1.1563915245001226
+p90_latency_s: 1.3980219082000078
+p95_latency_s: 1.4660771058001498
+p99_latency_s: 1.6220880792896517
+error_count: 0
+success_count: 100
+mean_ttft_s: None
+p50_ttft_s: None
+p95_ttft_s: None
+
+Wrote result JSON to results/dspark_qwen3_14b_sglang_h100_c32_b7_t128.json
+W&B run URL: https://wandb.ai/maorblumberg-tel-aviv-university/speculative-decoding-benchmark/runs/18u0fbw0
+wandb: uploading artifact run-18u0fbw0-requests; uploading artifact benchmark-dspark_qwen3_14b_sglang_h100_c32_b7_t128; updating run metadata
+wandb: uploading artifact run-18u0fbw0-requests; uploading artifact benchmark-dspark_qwen3_14b_sglang_h100_c32_b7_t128
+wandb: uploading artifact benchmark-dspark_qwen3_14b_sglang_h100_c32_b7_t128
+wandb: uploading output.log; uploading wandb-summary.json; uploading config.yaml; uploading media/table/requests_1_becc559d96ad9fa45643.table.json
+wandb: uploading output.log; uploading wandb-summary.json; uploading media/table/requests_1_becc559d96ad9fa45643.table.json
+wandb: uploading history steps 0-1, summary, console lines 1-26
+wandb: 
+wandb: Run history:
+wandb:              summary/error_count ▁
+wandb:           summary/mean_latency_s ▁
+wandb:              summary/num_prompts ▁
+wandb: summary/output_tokens_per_second ▁
+wandb:            summary/p50_latency_s ▁
+wandb:            summary/p90_latency_s ▁
+wandb:            summary/p95_latency_s ▁
+wandb:            summary/p99_latency_s ▁
+wandb:      summary/requests_per_second ▁
+wandb:            summary/success_count ▁
+wandb:                               +2 ...
+wandb: 
+wandb: Run summary:
+wandb:              summary/error_count 0
+wandb:           summary/mean_latency_s 1.14365
+wandb:              summary/num_prompts 100
+wandb: summary/output_tokens_per_second 3145.32489
+wandb:            summary/p50_latency_s 1.15639
+wandb:            summary/p90_latency_s 1.39802
+wandb:            summary/p95_latency_s 1.46608
+wandb:            summary/p99_latency_s 1.62209
+wandb:      summary/requests_per_second 24.57285
+wandb:            summary/success_count 100
+wandb:                               +2 ...
+wandb: 
+wandb: 🚀 View run avid-music-21 at: https://wandb.ai/maorblumberg-tel-aviv-university/speculative-decoding-benchmark/runs/18u0fbw0
+wandb: ⭐️ View project at: https://wandb.ai/maorblumberg-tel-aviv-university/speculative-decoding-benchmark
+wandb: Synced 5 W&B file(s), 1 media file(s), 4 artifact file(s) and 0 other file(s)
+wandb: Find logs at: ./wandb/run-20260718_113724-18u0fbw0/logs

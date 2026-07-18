@@ -1,0 +1,57 @@
+wandb: [wandb.login()] Loaded credentials for https://api.wandb.ai from WANDB_API_KEY.
+wandb: Currently logged in as: maorblumberg (maorblumberg-tel-aviv-university) to https://api.wandb.ai. Use `wandb login --relogin` to force relogin
+wandb: setting up run i6odjxho
+wandb: Tracking run with wandb version 0.28.1
+wandb: Run data is saved locally in /home/ubuntu/speculative_dflash_spark/wandb/run-20260718_112502-i6odjxho
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run qwen3-8b-sglang-dspark-c32
+wandb: ⭐️ View project at https://wandb.ai/maorblumberg-tel-aviv-university/speculative-decoding-benchmark
+wandb: 🚀 View run at https://wandb.ai/maorblumberg-tel-aviv-university/speculative-decoding-benchmark/runs/i6odjxho
+wandb: updating run metadata; uploading artifact dspark-comparison-inputs
+wandb: uploading artifact dspark-comparison-inputs
+wandb: uploading output.log; uploading wandb-summary.json; uploading config.yaml; uploading wandb-metadata.json
+wandb: uploading history steps 0-0, summary, console lines 0-0
+wandb: 
+wandb: Run history:
+wandb:     comparison/baseline_output_tok_s ▁
+wandb:    comparison/baseline_p50_latency_s ▁
+wandb:    comparison/baseline_p95_latency_s ▁
+wandb:         comparison/latency_ratio_p50 ▁
+wandb:         comparison/latency_ratio_p95 ▁
+wandb:  comparison/speculative_output_tok_s ▁
+wandb: comparison/speculative_p50_latency_s ▁
+wandb: comparison/speculative_p95_latency_s ▁
+wandb:      comparison/speedup_output_tok_s ▁
+wandb: 
+wandb: Run summary:
+wandb:     comparison/baseline_output_tok_s 3136.41799
+wandb:    comparison/baseline_p50_latency_s 1.05827
+wandb:    comparison/baseline_p95_latency_s 1.08027
+wandb:         comparison/latency_ratio_p50 0.69175
+wandb:         comparison/latency_ratio_p95 0.84093
+wandb:          comparison/speculative_mode dspark
+wandb:  comparison/speculative_output_tok_s 4944.72918
+wandb: comparison/speculative_p50_latency_s 0.73206
+wandb: comparison/speculative_p95_latency_s 0.90842
+wandb:      comparison/speedup_output_tok_s 1.57655
+wandb: 
+wandb: 🚀 View run qwen3-8b-sglang-dspark-c32 at: https://wandb.ai/maorblumberg-tel-aviv-university/speculative-decoding-benchmark/runs/i6odjxho
+wandb: ⭐️ View project at: https://wandb.ai/maorblumberg-tel-aviv-university/speculative-decoding-benchmark
+wandb: Synced 5 W&B file(s), 0 media file(s), 3 artifact file(s) and 0 other file(s)
+wandb: Find logs at: ./wandb/run-20260718_112502-i6odjxho/logs
+mode     | prompts | max_new_tokens | concurrency | total_output_tokens | wall_time_s | output_tok_s | p50_latency | p95_latency | speedup
+---------+---------+----------------+-------------+---------------------+-------------+--------------+-------------+-------------+--------
+baseline | 100     | 128            | 32          | 12801               | 4.081       | 3136.418     | 1.058       | 1.080       | 1.000  
+dspark   | 100     | 128            | 32          | 12800               | 2.589       | 4944.729     | 0.732       | 0.908       | 1.577  
+
+=== Key comparison ===
+baseline output tok/s:    3136.418
+dspark output tok/s: 4944.729
+speedup:                  1.577
+baseline p50 latency:     1.058
+dspark p50 latency:  0.732
+baseline p95 latency:     1.080
+dspark p95 latency:  0.908
+latency ratio p50:        0.692
+latency ratio p95:        0.841
+W&B run URL: https://wandb.ai/maorblumberg-tel-aviv-university/speculative-decoding-benchmark/runs/i6odjxho

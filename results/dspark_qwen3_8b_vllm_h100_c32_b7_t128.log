@@ -1,0 +1,82 @@
+[transformers] PyTorch was not found. Models won't be available and only tokenizers, configuration and file/data utilities can be used.
+Installed versions:
+  torch: not installed
+  transformers: 5.14.1
+  sglang: not installed
+  vllm: not installed
+  wandb: 0.28.1
+CUDA available: None
+GPU name: NVIDIA H100 80GB HBM3
+wandb: [wandb.login()] Loaded credentials for https://api.wandb.ai from WANDB_API_KEY.
+wandb: Currently logged in as: maorblumberg (maorblumberg-tel-aviv-university) to https://api.wandb.ai. Use `wandb login --relogin` to force relogin
+wandb: setting up run n515gc5w
+wandb: Tracking run with wandb version 0.28.1
+wandb: Run data is saved locally in /home/ubuntu/speculative_dflash_spark/wandb/run-20260718_111910-n515gc5w
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run vocal-pyramid-12
+wandb: ⭐️ View project at https://wandb.ai/maorblumberg-tel-aviv-university/speculative-decoding-benchmark
+wandb: 🚀 View run at https://wandb.ai/maorblumberg-tel-aviv-university/speculative-decoding-benchmark/runs/n515gc5w
+wandb: Detected [openai] in use.
+wandb: Use W&B Weave for improved LLM call tracing. Install Weave with `pip install weave` then add `import weave` to the top of your script.
+wandb: For more information, check out the docs at: https://weave-docs.wandb.ai
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Running 5 warmup requests...
+Benchmarking 100 prompts with concurrency=32...
+requests:   0%|          | 0/100 [00:00<?, ?it/s]requests:   1%|          | 1/100 [00:00<00:50,  1.97it/s]requests:   2%|▏         | 2/100 [00:00<00:28,  3.44it/s]requests:   6%|▌         | 6/100 [00:00<00:09, 10.15it/s]requests:  17%|█▋        | 17/100 [00:00<00:02, 30.14it/s]requests:  27%|██▋       | 27/100 [00:01<00:01, 45.20it/s]requests:  34%|███▍      | 34/100 [00:01<00:01, 46.48it/s]requests:  40%|████      | 40/100 [00:01<00:01, 34.94it/s]requests:  51%|█████     | 51/100 [00:01<00:01, 48.37it/s]requests:  60%|██████    | 60/100 [00:01<00:00, 54.09it/s]requests:  67%|██████▋   | 67/100 [00:01<00:00, 45.22it/s]requests:  73%|███████▎  | 73/100 [00:02<00:00, 43.50it/s]requests:  83%|████████▎ | 83/100 [00:02<00:00, 53.31it/s]requests:  92%|█████████▏| 92/100 [00:02<00:00, 57.27it/s]requests: 100%|██████████| 100/100 [00:02<00:00, 56.21it/s]requests: 100%|██████████| 100/100 [00:02<00:00, 40.32it/s]
+
+=== Summary ===
+wall_time_s: 2.482987964000131
+num_prompts: 100
+total_output_tokens: 12800
+output_tokens_per_second: 5155.079358249892
+requests_per_second: 40.27405748632728
+mean_latency_s: 0.7097298318699632
+p50_latency_s: 0.6767732504999913
+p90_latency_s: 0.9695480643998963
+p95_latency_s: 1.0353254729003765
+p99_latency_s: 1.068820891049418
+error_count: 0
+success_count: 100
+mean_ttft_s: None
+p50_ttft_s: None
+p95_ttft_s: None
+
+Wrote result JSON to results/dspark_qwen3_8b_vllm_h100_c32_b7_t128.json
+W&B run URL: https://wandb.ai/maorblumberg-tel-aviv-university/speculative-decoding-benchmark/runs/n515gc5w
+wandb: uploading artifact run-n515gc5w-requests; uploading artifact benchmark-dspark_qwen3_8b_vllm_h100_c32_b7_t128; updating run metadata
+wandb: uploading artifact run-n515gc5w-requests; uploading artifact benchmark-dspark_qwen3_8b_vllm_h100_c32_b7_t128
+wandb: uploading artifact benchmark-dspark_qwen3_8b_vllm_h100_c32_b7_t128
+wandb: uploading output.log; uploading wandb-summary.json; uploading config.yaml; uploading media/table/requests_1_f56079fc4d5dde3f6f21.table.json
+wandb: uploading wandb-summary.json; uploading config.yaml; uploading media/table/requests_1_f56079fc4d5dde3f6f21.table.json
+wandb: uploading history steps 0-1, summary, console lines 1-26
+wandb: 
+wandb: Run history:
+wandb:              summary/error_count ▁
+wandb:           summary/mean_latency_s ▁
+wandb:              summary/num_prompts ▁
+wandb: summary/output_tokens_per_second ▁
+wandb:            summary/p50_latency_s ▁
+wandb:            summary/p90_latency_s ▁
+wandb:            summary/p95_latency_s ▁
+wandb:            summary/p99_latency_s ▁
+wandb:      summary/requests_per_second ▁
+wandb:            summary/success_count ▁
+wandb:                               +2 ...
+wandb: 
+wandb: Run summary:
+wandb:              summary/error_count 0
+wandb:           summary/mean_latency_s 0.70973
+wandb:              summary/num_prompts 100
+wandb: summary/output_tokens_per_second 5155.07936
+wandb:            summary/p50_latency_s 0.67677
+wandb:            summary/p90_latency_s 0.96955
+wandb:            summary/p95_latency_s 1.03533
+wandb:            summary/p99_latency_s 1.06882
+wandb:      summary/requests_per_second 40.27406
+wandb:            summary/success_count 100
+wandb:                               +2 ...
+wandb: 
+wandb: 🚀 View run vocal-pyramid-12 at: https://wandb.ai/maorblumberg-tel-aviv-university/speculative-decoding-benchmark/runs/n515gc5w
+wandb: ⭐️ View project at: https://wandb.ai/maorblumberg-tel-aviv-university/speculative-decoding-benchmark
+wandb: Synced 5 W&B file(s), 1 media file(s), 4 artifact file(s) and 0 other file(s)
+wandb: Find logs at: ./wandb/run-20260718_111910-n515gc5w/logs
