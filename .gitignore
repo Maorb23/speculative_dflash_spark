@@ -93,7 +93,6 @@ wandb/
 # Generated prompt datasets
 prompts_*.jsonl
 
-*.log
 
 # Model weights and caches
 *.safetensors
