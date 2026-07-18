@@ -88,7 +88,11 @@ __pycache__/
 
 # Generated outputs
 wandb/
-results/
+# results/
+
+# Generated prompt datasets
+prompts_*.jsonl
+
 *.log
 
 # Model weights and caches
