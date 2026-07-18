@@ -109,19 +109,11 @@ PY
 check_sglang_features() {
   local help_text
   help_text=$("$SGLANG_PYTHON" -m sglang.launch_server --help 2>&1 || true)
-  if ! grep -q -- "--speculative-algorithm" <<<"$help_text"; then
-    echo "ERROR: this SGLang build does not expose speculative decoding support." >&2
+  if ! grep -q -- "--speculative-dspark-block-size" <<<"$help_text"; then
+    echo "ERROR: this SGLang build does not expose DSpark support." >&2
+    echo "Install SGLang 0.5.15.post1+ or use the official dev-dspark image." >&2
     exit 3
   fi
-
-  "$SGLANG_PYTHON" - <<'PY_CHECK'
-from sglang.srt.server_args import SpeculativeAlgorithm
-
-if not hasattr(SpeculativeAlgorithm, "DSPARK"):
-    raise SystemExit("ERROR: this SGLang build does not define DSPARK.")
-
-print("SGLang DSPARK algorithm check passed.")
-PY_CHECK
 }
 
 check_vllm_features() {
@@ -190,6 +182,7 @@ case "$FRAMEWORK" in
       --trust-remote-code
       --speculative-algorithm DSPARK
       --speculative-draft-model-path "$DRAFT_MODEL"
+      --speculative-dspark-block-size "$DSPARK_BLOCK_SIZE"
       --tp-size "$TP_SIZE"
       --max-running-requests "$MAX_RUNNING_REQUESTS"
       --mem-fraction-static "$MEM_FRACTION_STATIC"

@@ -64,19 +64,11 @@ print("sglang:", md.version("sglang"))
 PY
 
 sglang_help=$("$SGLANG_VENV/bin/python" -m sglang.launch_server --help 2>&1 || true)
-if ! grep -q -- "--speculative-algorithm" <<<"$sglang_help"; then
-  echo "ERROR: installed SGLang does not expose speculative decoding arguments." >&2
+if ! grep -q -- "--speculative-dspark-block-size" <<<"$sglang_help"; then
+  echo "ERROR: installed SGLang does not expose DSpark CLI arguments." >&2
+  echo "Expected --speculative-dspark-block-size in launch_server --help." >&2
   exit 3
 fi
-
-"$SGLANG_VENV/bin/python" - <<'PY_CHECK'
-from sglang.srt.server_args import SpeculativeAlgorithm
-
-if not hasattr(SpeculativeAlgorithm, "DSPARK"):
-    raise SystemExit("ERROR: this SGLang build does not define the DSPARK algorithm.")
-
-print("SGLang DSPARK algorithm check passed.")
-PY_CHECK
 
 "$VLLM_VENV/bin/python" - <<'PY'
 import importlib.metadata as md

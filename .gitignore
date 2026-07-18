@@ -74,3 +74,28 @@ dist/
 
 # Jupyter
 .ipynb_checkpoints/
+
+# Virtual environments
+.venv/
+.venv-*/
+venv/
+env/
+
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+
+# Generated outputs
+wandb/
+results/
+*.log
+
+# Model weights and caches
+*.safetensors
+*.bin
+*.pt
+*.pth
+*.ckpt
+*.gguf
+.cache/
