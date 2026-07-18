@@ -1,0 +1,82 @@
+[transformers] PyTorch was not found. Models won't be available and only tokenizers, configuration and file/data utilities can be used.
+Installed versions:
+  torch: not installed
+  transformers: 5.14.1
+  sglang: not installed
+  vllm: not installed
+  wandb: 0.28.1
+CUDA available: None
+GPU name: NVIDIA H100 80GB HBM3
+wandb: [wandb.login()] Loaded credentials for https://api.wandb.ai from WANDB_API_KEY.
+wandb: Currently logged in as: maorblumberg (maorblumberg-tel-aviv-university) to https://api.wandb.ai. Use `wandb login --relogin` to force relogin
+wandb: setting up run lcmrpt2z
+wandb: Tracking run with wandb version 0.28.1
+wandb: Run data is saved locally in /home/ubuntu/speculative_dflash_spark/wandb/run-20260718_104222-lcmrpt2z
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run magic-resonance-2
+wandb: ⭐️ View project at https://wandb.ai/maorblumberg-tel-aviv-university/speculative-decoding-benchmark
+wandb: 🚀 View run at https://wandb.ai/maorblumberg-tel-aviv-university/speculative-decoding-benchmark/runs/lcmrpt2z
+wandb: Detected [openai] in use.
+wandb: Use W&B Weave for improved LLM call tracing. Install Weave with `pip install weave` then add `import weave` to the top of your script.
+wandb: For more information, check out the docs at: https://weave-docs.wandb.ai
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Running 5 warmup requests...
+Benchmarking 100 prompts with concurrency=32...
+requests:   0%|          | 0/100 [00:00<?, ?it/s]requests:   1%|          | 1/100 [00:00<00:38,  2.59it/s]requests:   6%|▌         | 6/100 [00:00<00:08, 11.62it/s]requests:  15%|█▌        | 15/100 [00:00<00:02, 29.03it/s]requests:  31%|███       | 31/100 [00:00<00:01, 56.04it/s]requests:  39%|███▉      | 39/100 [00:01<00:01, 50.76it/s]requests:  46%|████▌     | 46/100 [00:01<00:00, 54.90it/s]requests:  57%|█████▋    | 57/100 [00:01<00:00, 67.74it/s]requests:  65%|██████▌   | 65/100 [00:01<00:00, 67.22it/s]requests:  73%|███████▎  | 73/100 [00:01<00:00, 59.21it/s]requests:  88%|████████▊ | 88/100 [00:01<00:00, 78.61it/s]requests:  97%|█████████▋| 97/100 [00:01<00:00, 80.59it/s]requests: 100%|██████████| 100/100 [00:01<00:00, 55.90it/s]
+
+=== Summary ===
+wall_time_s: 1.7921644689999994
+num_prompts: 100
+total_output_tokens: 12800
+output_tokens_per_second: 7142.201634620179
+requests_per_second: 55.79845027047015
+mean_latency_s: 0.5164446904000078
+p50_latency_s: 0.470582152499901
+p90_latency_s: 0.738968371099918
+p95_latency_s: 0.7899637325500407
+p99_latency_s: 0.8407062661703323
+error_count: 0
+success_count: 100
+mean_ttft_s: None
+p50_ttft_s: None
+p95_ttft_s: None
+
+Wrote result JSON to results/dspark_qwen3_4b_vllm_h100_c32_b7_t128.json
+W&B run URL: https://wandb.ai/maorblumberg-tel-aviv-university/speculative-decoding-benchmark/runs/lcmrpt2z
+wandb: uploading artifact run-lcmrpt2z-requests; uploading artifact benchmark-dspark_qwen3_4b_vllm_h100_c32_b7_t128; updating run metadata
+wandb: uploading artifact run-lcmrpt2z-requests; uploading artifact benchmark-dspark_qwen3_4b_vllm_h100_c32_b7_t128
+wandb: uploading artifact benchmark-dspark_qwen3_4b_vllm_h100_c32_b7_t128
+wandb: uploading media/table/requests_1_65b00d22d46503e480e0.table.json; uploading output.log; uploading wandb-summary.json; uploading config.yaml
+wandb: uploading output.log; uploading wandb-summary.json; uploading config.yaml
+wandb: uploading history steps 0-1, summary, console lines 1-26
+wandb: 
+wandb: Run history:
+wandb:              summary/error_count ▁
+wandb:           summary/mean_latency_s ▁
+wandb:              summary/num_prompts ▁
+wandb: summary/output_tokens_per_second ▁
+wandb:            summary/p50_latency_s ▁
+wandb:            summary/p90_latency_s ▁
+wandb:            summary/p95_latency_s ▁
+wandb:            summary/p99_latency_s ▁
+wandb:      summary/requests_per_second ▁
+wandb:            summary/success_count ▁
+wandb:                               +2 ...
+wandb: 
+wandb: Run summary:
+wandb:              summary/error_count 0
+wandb:           summary/mean_latency_s 0.51644
+wandb:              summary/num_prompts 100
+wandb: summary/output_tokens_per_second 7142.20163
+wandb:            summary/p50_latency_s 0.47058
+wandb:            summary/p90_latency_s 0.73897
+wandb:            summary/p95_latency_s 0.78996
+wandb:            summary/p99_latency_s 0.84071
+wandb:      summary/requests_per_second 55.79845
+wandb:            summary/success_count 100
+wandb:                               +2 ...
+wandb: 
+wandb: 🚀 View run magic-resonance-2 at: https://wandb.ai/maorblumberg-tel-aviv-university/speculative-decoding-benchmark/runs/lcmrpt2z
+wandb: ⭐️ View project at: https://wandb.ai/maorblumberg-tel-aviv-university/speculative-decoding-benchmark
+wandb: Synced 5 W&B file(s), 1 media file(s), 4 artifact file(s) and 0 other file(s)
+wandb: Find logs at: ./wandb/run-20260718_104222-lcmrpt2z/logs
