@@ -1,0 +1,7 @@
+datasets
+transformers
+openai
+httpx
+numpy
+tqdm
+wandb

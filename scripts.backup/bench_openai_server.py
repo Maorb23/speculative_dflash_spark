@@ -27,7 +27,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--api-key", default="dummy")
     parser.add_argument("--model", default="Qwen/Qwen3-4B")
     parser.add_argument("--draft-model", default=None)
-    parser.add_argument("--mode", choices=["baseline", "dflash", "dspark"], required=True)
+    parser.add_argument("--mode", choices=["baseline", "dflash"], required=True)
     parser.add_argument("--framework", choices=["sglang", "vllm"], required=True)
     parser.add_argument("--profile", choices=["cheap", "h100"], default="cheap")
     parser.add_argument("--max-new-tokens", type=int, default=128)
@@ -41,7 +41,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--tokenizer", default=None, help="Tokenizer for output token counting. Defaults to --model.")
 
     parser.add_argument("--wandb", action="store_true", help="Enable Weights & Biases logging.")
-    parser.add_argument("--wandb-project", default=os.getenv("WANDB_PROJECT", "speculative-decoding-benchmark"))
+    parser.add_argument("--wandb-project", default=os.getenv("WANDB_PROJECT", "dflash-benchmark"))
     parser.add_argument("--wandb-entity", default=os.getenv("WANDB_ENTITY") or None)
     parser.add_argument("--wandb-run-name", default=os.getenv("WANDB_RUN_NAME") or None)
     parser.add_argument("--wandb-group", default=os.getenv("WANDB_GROUP") or None)
@@ -398,15 +398,9 @@ def main() -> None:
         "temperature": args.temperature,
         "seed": None,
         "num_prefix_tokens": first_prefix_tokens,
-        "speculative_method": args.mode if args.mode in {"dflash", "dspark"} else None,
+        "speculative_method": "dflash" if args.mode == "dflash" else None,
         "dflash_block_size": os.getenv("DFLASH_BLOCK_SIZE"),
-        "dspark_block_size": os.getenv("DSPARK_BLOCK_SIZE"),
         "num_speculative_tokens": os.getenv("NUM_SPECULATIVE_TOKENS"),
-        "draft_sample_method": os.getenv("DRAFT_SAMPLE_METHOD"),
-        "dspark_attention_backend": os.getenv("DSPARK_ATTENTION_BACKEND"),
-        "sglang_ragged_verify_mode": os.getenv("SGLANG_RAGGED_VERIFY_MODE"),
-        "dspark_sps_table_path": os.getenv("DSPARK_SPS_TABLE_PATH"),
-        "dspark_sts_path": os.getenv("DSPARK_STS_PATH"),
         "chat": args.chat,
         "stream": args.stream,
         "warmup": args.warmup,
