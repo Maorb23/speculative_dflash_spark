@@ -1,238 +1,86 @@
-let state = {
-  data: null,
-  framework: "all",
-  mode: "all",
-  query: ""
-};
-
-const fmt = new Intl.NumberFormat("en-US", {
-  maximumFractionDigits: 2
-});
+const state = { data: null, technology: "all", framework: "all", model: "all", selected: null };
+const fmt = new Intl.NumberFormat("en-US", { maximumFractionDigits: 0 });
+const decimal = new Intl.NumberFormat("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
 async function loadSummary() {
   const response = await fetch("data/summary.json");
-  if (!response.ok) {
-    throw new Error(`Failed to load summary.json: ${response.status}`);
-  }
+  if (!response.ok) throw new Error(`Failed to load summary data (${response.status})`);
   return response.json();
 }
 
-function asNumber(value) {
-  return typeof value === "number" && Number.isFinite(value) ? value : null;
+function comparisons() { return state.data?.comparisons ?? []; }
+function visibleComparisons() {
+  return comparisons().filter((item) =>
+    (state.technology === "all" || item.technology === state.technology) &&
+    (state.framework === "all" || item.framework === state.framework) &&
+    (state.model === "all" || item.model === state.model)
+  );
 }
-
-function displayNumber(value, suffix = "") {
-  const number = asNumber(value);
-  return number === null ? "n/a" : `${fmt.format(number)}${suffix}`;
+function optionMarkup(items, label) {
+  return `<option value="all">All ${label}</option>${items.map((item) => `<option value="${item}">${item}</option>`).join("")}`;
 }
-
-function runs() {
-  return state.data?.runs ?? [];
-}
-
-function filteredRuns() {
-  const query = state.query.trim().toLowerCase();
-  return runs().filter((run) => {
-    const frameworkMatch = state.framework === "all" || run.framework === state.framework;
-    const modeMatch = state.mode === "all" || run.mode === state.mode;
-    const haystack = [
-      run.label,
-      run.mode,
-      run.framework,
-      run.profile,
-      run.model,
-      run.draft_model,
-      run.hardware,
-      run.status,
-      run.notes
-    ].join(" ").toLowerCase();
-    return frameworkMatch && modeMatch && (!query || haystack.includes(query));
-  });
-}
-
-function bestRun() {
-  return [...runs()]
-    .filter((run) => asNumber(run.output_tokens_per_second) !== null)
-    .sort((a, b) => b.output_tokens_per_second - a.output_tokens_per_second)[0];
-}
-
-function bestSpeedupRun() {
-  return [...runs()]
-    .filter((run) => run.mode === "dflash" && asNumber(run.speedup) !== null)
-    .sort((a, b) => b.speedup - a.speedup)[0];
-}
-
-function renderMetrics() {
-  const best = bestRun();
-  const bestSpeedup = bestSpeedupRun();
-  const okCount = runs().filter((run) => run.status === "ok" || run.status === "success").length;
-  const failedCount = runs().filter((run) => run.status === "failed" || run.status === "error").length;
-
-  document.querySelector("#metric-speedup").textContent = bestSpeedup
-    ? `${displayNumber(bestSpeedup.speedup)}x`
-    : "n/a";
-  document.querySelector("#metric-speedup-label").textContent = bestSpeedup
-    ? bestSpeedup.label
-    : "Best DFlash speedup";
-  document.querySelector("#metric-best").textContent = best
-    ? displayNumber(best.output_tokens_per_second, " tok/s")
-    : "n/a";
-  document.querySelector("#metric-best-label").textContent = best
-    ? best.label
-    : "No completed benchmark yet";
-  document.querySelector("#metric-runs").textContent = runs().length;
-  document.querySelector("#metric-ok").textContent = `${okCount}/${failedCount}`;
-}
-
 function renderFilters() {
-  const frameworkSelect = document.querySelector("#framework-filter");
-  const modeSelect = document.querySelector("#mode-filter");
-
-  const frameworks = [...new Set(runs().map((run) => run.framework).filter(Boolean))].sort();
-  const modes = [...new Set(runs().map((run) => run.mode).filter(Boolean))].sort();
-
-  frameworkSelect.innerHTML = `<option value="all">All frameworks</option>${frameworks
-    .map((framework) => `<option value="${framework}">${framework}</option>`)
-    .join("")}`;
-  modeSelect.innerHTML = `<option value="all">All modes</option>${modes
-    .map((mode) => `<option value="${mode}">${mode}</option>`)
-    .join("")}`;
-
-  frameworkSelect.value = state.framework;
-  modeSelect.value = state.mode;
+  const technologies = [...new Set(comparisons().map((item) => item.technology))].sort();
+  const frameworks = [...new Set(comparisons().map((item) => item.framework))].sort();
+  const models = [...new Set(comparisons().map((item) => item.model))].sort((a, b) => Number(a.match(/\d+/)[0]) - Number(b.match(/\d+/)[0]));
+  const filters = [
+    ["#technology-filter", technologies, "methods", "technology"],
+    ["#framework-filter", frameworks, "frameworks", "framework"],
+    ["#model-filter", models, "models", "model"]
+  ];
+  filters.forEach(([selector, items, label, property]) => {
+    const target = document.querySelector(selector);
+    target.innerHTML = optionMarkup(items, label);
+    target.value = state[property];
+  });
 }
-
+function latency(value) { return `${decimal.format(value)} s`; }
+function deltaPercent(ratio) { return `${ratio < 1 ? "↓" : "↑"} ${Math.abs((ratio - 1) * 100).toFixed(1)}%`; }
+function renderCards() {
+  const target = document.querySelector("#comparison-grid");
+  const entries = visibleComparisons();
+  target.innerHTML = entries.length ? entries.map((item) => {
+    const isSelected = state.selected === item.id;
+    const p95Class = item.latency_ratio_p95 > 1 ? "regression" : "improvement";
+    return `<article class="comparison-card ${isSelected ? "selected" : ""}" data-id="${item.id}" tabindex="0">
+      <div class="card-topline"><span class="tag ${item.technology}">${item.technology}</span><span>${item.framework}</span></div>
+      <h3>${item.model}</h3>
+      <p class="card-context">${item.hardware} · ${item.prompts} prompts · c${item.concurrency}</p>
+      <div class="speedup"><strong>${decimal.format(item.speedup)}×</strong><span>output throughput</span></div>
+      <div class="throughput-pair"><div><span>Baseline</span><strong>${fmt.format(item.baseline.output_tokens_per_second)}</strong><small>tok/s</small></div><div><span>${item.technology}</span><strong>${fmt.format(item.speculative.output_tokens_per_second)}</strong><small>tok/s</small></div></div>
+      <div class="latency-row"><span>p50 ${latency(item.baseline.p50_latency_s)} → ${latency(item.speculative.p50_latency_s)} <b class="improvement">${deltaPercent(item.latency_ratio_p50)}</b></span><span>p95 ${latency(item.baseline.p95_latency_s)} → ${latency(item.speculative.p95_latency_s)} <b class="${p95Class}">${deltaPercent(item.latency_ratio_p95)}</b></span></div>
+      ${item.wandb_url ? `<a class="run-link" href="${item.wandb_url}" target="_blank" rel="noreferrer">View recorded run <span aria-hidden="true">↗</span></a>` : ""}
+    </article>`;
+  }).join("") : "<p class=\"empty\">No comparisons match these filters.</p>";
+  target.querySelectorAll(".comparison-card").forEach((card) => {
+    const choose = () => { state.selected = card.dataset.id; renderCards(); renderChart(); };
+    card.addEventListener("click", choose);
+    card.addEventListener("keydown", (event) => { if (event.key === "Enter" || event.key === " ") choose(); });
+  });
+}
 function renderChart() {
-  const chart = document.querySelector("#throughput-chart");
-  const chartRuns = filteredRuns()
-    .filter((run) => asNumber(run.output_tokens_per_second) !== null)
-    .sort((a, b) => b.output_tokens_per_second - a.output_tokens_per_second);
-  const max = Math.max(...chartRuns.map((run) => run.output_tokens_per_second), 1);
-
-  chart.innerHTML = chartRuns.length
-    ? chartRuns
-        .map((run) => {
-          const width = Math.max(1, (run.output_tokens_per_second / max) * 100);
-          return `
-            <div class="bar-row">
-              <div class="bar-label">${run.label}</div>
-              <div class="bar-track" title="${run.notes}">
-                <div class="bar-fill ${run.mode}" style="width: ${width}%"></div>
-              </div>
-              <div class="bar-value">${displayNumber(run.output_tokens_per_second)}</div>
-            </div>
-          `;
-        })
-        .join("")
-    : `<p class="small">No numeric throughput in the current filter.</p>`;
+  const target = document.querySelector("#speedup-chart");
+  const entries = visibleComparisons();
+  const max = Math.max(...entries.map((item) => item.speedup), 1.75);
+  target.innerHTML = entries.length ? entries.map((item) => `<button class="chart-row ${state.selected === item.id ? "selected" : ""}" data-id="${item.id}" aria-label="Focus ${item.framework} ${item.model} ${item.technology}: ${decimal.format(item.speedup)} times baseline"><span>${item.framework} · ${item.model}</span><i><b class="${item.technology}" style="width:${(item.speedup / max) * 100}%"></b></i><strong>${decimal.format(item.speedup)}×</strong></button>`).join("") : "";
+  target.querySelectorAll("button").forEach((button) => button.addEventListener("click", () => { state.selected = button.dataset.id; renderCards(); renderChart(); document.querySelector(`[data-id="${state.selected}"]`)?.focus(); }));
 }
-
-function statusClass(status) {
-  if (status === "ok") return "success";
-  if (status === "error") return "failed";
-  return status || "planned";
+function renderSummary() {
+  const best = [...comparisons()].sort((a, b) => b.speedup - a.speedup)[0];
+  const highest = [...comparisons()].sort((a, b) => b.speculative.output_tokens_per_second - a.speculative.output_tokens_per_second)[0];
+  document.querySelector("#updated").textContent = state.data.updated;
+  document.querySelector("#headline").textContent = state.data.headline;
+  document.querySelector("#metric-speedup").textContent = `${decimal.format(best.speedup)}×`;
+  document.querySelector("#metric-speedup-label").textContent = `${best.framework} · ${best.model} · ${best.technology}`;
+  document.querySelector("#metric-best").textContent = `${fmt.format(highest.speculative.output_tokens_per_second)} tok/s`;
+  document.querySelector("#metric-best-label").textContent = `${highest.framework} · ${highest.model} · ${highest.technology}`;
+  document.querySelector("#metric-comparisons").textContent = comparisons().length;
+  document.querySelector("#metric-frameworks").textContent = new Set(comparisons().map((item) => item.framework)).size;
+  document.querySelector("#metric-runs").textContent = comparisons().length * 2;
 }
-
-function renderRuns() {
-  const list = document.querySelector("#run-list");
-  const visibleRuns = filteredRuns();
-
-  list.innerHTML = visibleRuns.length
-    ? visibleRuns
-        .map((run) => {
-          const draft = run.draft_model ? ` Draft: ${run.draft_model}.` : "";
-          const p50 = displayNumber(run.p50_latency_s, "s p50");
-          const p95 = displayNumber(run.p95_latency_s, "s p95");
-          const speedup = asNumber(run.speedup) === null ? "" : ` · ${displayNumber(run.speedup)}x speedup`;
-          const shape = [
-            run.hardware,
-            run.prompts ? `${run.prompts} prompts` : null,
-            run.max_new_tokens ? `${run.max_new_tokens} max tokens` : null,
-            run.concurrency ? `c${run.concurrency}` : null
-          ].filter(Boolean).join(" · ");
-          const wandb = run.wandb_url
-            ? `<a class="inline-link" href="${run.wandb_url}">W&B run</a>`
-            : "";
-          return `
-            <article class="run-row">
-              <div class="run-head">
-                <div>
-                  <h3 class="run-title">${run.label}</h3>
-                  <p class="run-meta">${run.framework ?? "unknown"} · ${run.profile ?? "profile n/a"} · ${run.model}.${draft}</p>
-                </div>
-                <span class="pill ${statusClass(run.status)}">${run.status}</span>
-              </div>
-              <p class="run-notes">${run.notes}</p>
-              <p class="run-meta">
-                ${displayNumber(run.output_tokens_per_second, " tok/s")}${speedup} ·
-                ${p50} · ${p95} ·
-                ${displayNumber(run.total_output_tokens, " tokens")}
-              </p>
-              <p class="run-meta">${shape}${wandb ? ` · ${wandb}` : ""}</p>
-            </article>
-          `;
-        })
-        .join("")
-    : `<p class="small">No runs match the current filters.</p>`;
-}
-
-function renderTimeline() {
-  const target = document.querySelector("#timeline");
-  target.innerHTML = (state.data?.milestones ?? [])
-    .map((item) => `
-      <div class="timeline-item">
-        <span class="pill ${item.state}">${item.state}</span>
-        <div>
-          <h3>${item.title}</h3>
-          <p>${item.body}</p>
-        </div>
-      </div>
-    `)
-    .join("");
-}
-
-function renderDecisions() {
-  const target = document.querySelector("#decisions");
-  target.innerHTML = (state.data?.decisions ?? [])
-    .map((decision) => `<li>${decision}</li>`)
-    .join("");
-}
-
-function renderAll() {
-  document.querySelector("#updated").textContent = state.data?.updated ?? "unknown";
-  document.querySelector("#headline").textContent = state.data?.headline ?? "";
-  renderMetrics();
-  renderFilters();
-  renderChart();
-  renderRuns();
-  renderTimeline();
-  renderDecisions();
-}
-
 function bindEvents() {
-  document.querySelector("#framework-filter").addEventListener("change", (event) => {
-    state.framework = event.target.value;
-    renderChart();
-    renderRuns();
-  });
-  document.querySelector("#mode-filter").addEventListener("change", (event) => {
-    state.mode = event.target.value;
-    renderChart();
-    renderRuns();
-  });
-  document.querySelector("#search").addEventListener("input", (event) => {
-    state.query = event.target.value;
-    renderChart();
-    renderRuns();
+  [["#technology-filter", "technology"], ["#framework-filter", "framework"], ["#model-filter", "model"]].forEach(([selector, property]) => {
+    document.querySelector(selector).addEventListener("change", (event) => { state[property] = event.target.value; state.selected = null; renderCards(); renderChart(); });
   });
 }
-
-loadSummary()
-  .then((data) => {
-    state.data = data;
-    bindEvents();
-    renderAll();
-  })
-  .catch((error) => {
-    document.querySelector("#headline").textContent = error.message;
-  });
+loadSummary().then((data) => { state.data = data; renderSummary(); renderFilters(); bindEvents(); renderCards(); renderChart(); }).catch((error) => { document.querySelector("#headline").textContent = error.message; });

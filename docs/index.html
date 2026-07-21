@@ -3,82 +3,90 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>DFlash Qwen 4B Benchmark</title>
-    <meta name="description" content="Interactive dashboard for baseline vs DFlash speculative decoding benchmarks.">
+    <title>Speculative Decoding Benchmarks | H100</title>
+    <meta name="description" content="Interactive H100 benchmark comparisons for DFlash and DSpark speculative decoding with SGLang and vLLM.">
     <link rel="stylesheet" href="assets/styles.css">
   </head>
   <body>
-    <div class="app-shell">
-      <header class="hero">
-        <div class="hero-inner">
-          <p class="eyebrow">DFlash Benchmark · updated <span id="updated">loading</span></p>
-          <h1>Measured DFlash speedups on Qwen 4B</h1>
-          <p class="lede" id="headline">Loading benchmark summary...</p>
+    <header class="site-header">
+      <a class="brand" href="#top" aria-label="Speculative decoding benchmarks home">SD / Bench</a>
+      <nav aria-label="Primary navigation">
+        <a href="#comparisons">Comparisons</a>
+        <a href="#methodology">Methodology</a>
+        <a href="data/summary.json">Data</a>
+      </nav>
+    </header>
+
+    <main id="top">
+      <section class="hero">
+        <div class="hero-copy">
+          <p class="eyebrow">H100 · 100 prompts · 128 output tokens · concurrency 32</p>
+          <h1>Speculative decoding,<br><span>measured end to end.</span></h1>
+          <p class="lede" id="headline">Loading benchmark summary…</p>
           <div class="hero-actions">
-            <a class="button primary" href="#runs">Explore Runs</a>
-            <a class="button" href="data/summary.json">Summary JSON</a>
-            <a class="button" href="https://huggingface.co/z-lab/Qwen3-4B-DFlash-b16">DFlash Model</a>
+            <a class="button primary" href="#comparisons">Explore comparisons</a>
+            <a class="button" href="data/summary.json">Download source data</a>
           </div>
         </div>
-      </header>
+        <aside class="hero-proof" aria-label="Benchmark highlights">
+          <p class="proof-label">Best observed throughput gain</p>
+          <p class="proof-value" id="metric-speedup">—</p>
+          <p class="proof-detail" id="metric-speedup-label">Loading…</p>
+          <div class="proof-rule"></div>
+          <p class="proof-label">Highest measured throughput</p>
+          <p class="proof-value compact" id="metric-best">—</p>
+          <p class="proof-detail" id="metric-best-label">Loading…</p>
+        </aside>
+      </section>
 
-      <main>
-        <div class="section-inner">
-          <section aria-label="Summary metrics">
-            <div class="metric-grid">
-              <div class="metric">
-                <p class="metric-value" id="metric-speedup">n/a</p>
-                <p class="metric-label" id="metric-speedup-label">Best DFlash speedup</p>
-              </div>
-              <div class="metric">
-                <p class="metric-value" id="metric-best">n/a</p>
-                <p class="metric-label" id="metric-best-label">Best throughput</p>
-              </div>
-              <div class="metric">
-                <p class="metric-value" id="metric-runs">0</p>
-                <p class="metric-label">Tracked runs</p>
-              </div>
-              <div class="metric">
-                <p class="metric-value" id="metric-ok">0/0</p>
-                <p class="metric-label">OK / failed</p>
-              </div>
-            </div>
-          </section>
+      <section class="summary-band" aria-label="Benchmark summary">
+        <div><strong id="metric-comparisons">—</strong><span>matched comparisons</span></div>
+        <div><strong id="metric-frameworks">—</strong><span>serving frameworks</span></div>
+        <div><strong id="metric-runs">—</strong><span>measured runs</span></div>
+        <div><strong>H100</strong><span>GPU platform</span></div>
+      </section>
 
-          <section id="runs" class="split">
-            <div class="panel">
-              <h2>Throughput And Speedup</h2>
-              <p class="small">H100 results are preloaded. Use filters to compare baseline and DFlash, then paste future GPU result JSONs below.</p>
-              <div class="controls">
-                <select id="framework-filter" aria-label="Filter by framework"></select>
-                <select id="mode-filter" aria-label="Filter by mode"></select>
-                <input id="search" type="search" placeholder="Search model, profile, notes" aria-label="Search runs">
-              </div>
-              <div class="chart-wrap">
-                <div id="throughput-chart" class="bar-chart"></div>
-              </div>
-            </div>
-
-            <div class="panel">
-              <h2>Run Details</h2>
-              <div id="run-list" class="run-list"></div>
-            </div>
-          </section>
-
-          <section class="split">
-            <div class="panel">
-              <h2>Pipeline</h2>
-              <div id="timeline" class="timeline"></div>
-            </div>
-            <div class="panel">
-              <h2>Operating Notes</h2>
-              <ol id="decisions" class="decision-list"></ol>
-            </div>
-          </section>
-
+      <section id="comparisons" class="content-section">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Results explorer</p>
+            <h2>Matched baseline vs speculative runs</h2>
+          </div>
+          <p>Throughput is output tokens per second. Each card compares runs with the same prompt set, output cap, and concurrency.</p>
         </div>
-      </main>
-    </div>
+
+        <div class="controls" aria-label="Comparison filters">
+          <label>Method <select id="technology-filter"></select></label>
+          <label>Framework <select id="framework-filter"></select></label>
+          <label>Model <select id="model-filter"></select></label>
+        </div>
+        <div id="comparison-grid" class="comparison-grid" aria-live="polite"></div>
+      </section>
+
+      <section class="content-section chart-section">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">At a glance</p>
+            <h2>Relative throughput by comparison</h2>
+          </div>
+          <p>Each bar shows speculative throughput as a multiple of the paired baseline. Click a result card above to focus this view.</p>
+        </div>
+        <div id="speedup-chart" class="speedup-chart" aria-live="polite"></div>
+      </section>
+
+      <section id="methodology" class="content-section methodology">
+        <div>
+          <p class="eyebrow">Methodology</p>
+          <h2>A like-for-like serving comparison.</h2>
+        </div>
+        <div class="method-grid">
+          <article><span>01</span><h3>Fixed workload</h3><p>100 prompts, a 128-token output limit, and concurrency 32 for every paired run.</p></article>
+          <article><span>02</span><h3>Paired reporting</h3><p>Baseline and speculative runs are reported together, including throughput and latency percentiles.</p></article>
+          <article><span>03</span><h3>Read the tail</h3><p>p50 and p95 are shown alongside speedup; a throughput gain does not hide a p95 regression.</p></article>
+        </div>
+      </section>
+    </main>
+    <footer>Benchmark data updated <span id="updated">—</span> · Results from the supplied comparison logs.</footer>
     <script src="assets/app.js"></script>
   </body>
 </html>
