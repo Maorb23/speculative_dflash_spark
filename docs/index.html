@@ -20,7 +20,7 @@
     <main id="top">
       <section class="hero">
         <div class="hero-copy">
-          <p class="eyebrow">H100 · 100 prompts · 128 output tokens · concurrency 32</p>
+          <p class="hero-meta">H100 · 100 prompts · 128 output tokens</p>
           <h1>Speculative decoding,<br><span>measured end to end.</span></h1>
           <p class="lede" id="headline">Loading benchmark summary…</p>
           <div class="hero-actions">
@@ -32,10 +32,6 @@
           <p class="proof-label">Best observed throughput gain</p>
           <p class="proof-value" id="metric-speedup">—</p>
           <p class="proof-detail" id="metric-speedup-label">Loading…</p>
-          <div class="proof-rule"></div>
-          <p class="proof-label">Highest measured throughput</p>
-          <p class="proof-value compact" id="metric-best">—</p>
-          <p class="proof-detail" id="metric-best-label">Loading…</p>
         </aside>
       </section>
 
@@ -49,7 +45,6 @@
       <section id="comparisons" class="content-section">
         <div class="section-heading">
           <div>
-            <p class="eyebrow">Results explorer</p>
             <h2>Matched baseline vs speculative runs</h2>
           </div>
           <p>Throughput is output tokens per second. Each card compares runs with the same prompt set, output cap, and concurrency.</p>
@@ -66,7 +61,6 @@
       <section class="content-section chart-section">
         <div class="section-heading">
           <div>
-            <p class="eyebrow">At a glance</p>
             <h2>Relative throughput by comparison</h2>
           </div>
           <p>Each bar shows speculative throughput as a multiple of the paired baseline. Click a result card above to focus this view.</p>
@@ -76,7 +70,6 @@
 
       <section id="methodology" class="content-section methodology">
         <div>
-          <p class="eyebrow">Methodology</p>
           <h2>A like-for-like serving comparison.</h2>
         </div>
         <div class="method-grid">

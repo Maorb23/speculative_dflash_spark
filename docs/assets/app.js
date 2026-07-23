@@ -49,7 +49,6 @@ function renderCards() {
       <div class="speedup"><strong>${decimal.format(item.speedup)}×</strong><span>output throughput</span></div>
       <div class="throughput-pair"><div><span>Baseline</span><strong>${fmt.format(item.baseline.output_tokens_per_second)}</strong><small>tok/s</small></div><div><span>${item.technology}</span><strong>${fmt.format(item.speculative.output_tokens_per_second)}</strong><small>tok/s</small></div></div>
       <div class="latency-row"><span>p50 ${latency(item.baseline.p50_latency_s)} → ${latency(item.speculative.p50_latency_s)} <b class="improvement">${deltaPercent(item.latency_ratio_p50)}</b></span><span>p95 ${latency(item.baseline.p95_latency_s)} → ${latency(item.speculative.p95_latency_s)} <b class="${p95Class}">${deltaPercent(item.latency_ratio_p95)}</b></span></div>
-      ${item.wandb_url ? `<a class="run-link" href="${item.wandb_url}" target="_blank" rel="noreferrer">View recorded run <span aria-hidden="true">↗</span></a>` : ""}
     </article>`;
   }).join("") : "<p class=\"empty\">No comparisons match these filters.</p>";
   target.querySelectorAll(".comparison-card").forEach((card) => {
@@ -62,18 +61,15 @@ function renderChart() {
   const target = document.querySelector("#speedup-chart");
   const entries = visibleComparisons();
   const max = Math.max(...entries.map((item) => item.speedup), 1.75);
-  target.innerHTML = entries.length ? entries.map((item) => `<button class="chart-row ${state.selected === item.id ? "selected" : ""}" data-id="${item.id}" aria-label="Focus ${item.framework} ${item.model} ${item.technology}: ${decimal.format(item.speedup)} times baseline"><span>${item.framework} · ${item.model}</span><i><b class="${item.technology}" style="width:${(item.speedup / max) * 100}%"></b></i><strong>${decimal.format(item.speedup)}×</strong></button>`).join("") : "";
+  target.innerHTML = entries.length ? entries.map((item) => `<button class="chart-row ${state.selected === item.id ? "selected" : ""}" data-id="${item.id}" aria-label="Focus ${item.framework} ${item.model} ${item.technology}: ${decimal.format(item.speedup)} times baseline"><span class="chart-label"><b>${item.framework} · ${item.model}</b><small class="method ${item.technology}">${item.technology}</small></span><i><b class="${item.technology}" style="width:${(item.speedup / max) * 100}%"></b></i><strong>${decimal.format(item.speedup)}×</strong></button>`).join("") : "";
   target.querySelectorAll("button").forEach((button) => button.addEventListener("click", () => { state.selected = button.dataset.id; renderCards(); renderChart(); document.querySelector(`[data-id="${state.selected}"]`)?.focus(); }));
 }
 function renderSummary() {
   const best = [...comparisons()].sort((a, b) => b.speedup - a.speedup)[0];
-  const highest = [...comparisons()].sort((a, b) => b.speculative.output_tokens_per_second - a.speculative.output_tokens_per_second)[0];
   document.querySelector("#updated").textContent = state.data.updated;
   document.querySelector("#headline").textContent = state.data.headline;
   document.querySelector("#metric-speedup").textContent = `${decimal.format(best.speedup)}×`;
   document.querySelector("#metric-speedup-label").textContent = `${best.framework} · ${best.model} · ${best.technology}`;
-  document.querySelector("#metric-best").textContent = `${fmt.format(highest.speculative.output_tokens_per_second)} tok/s`;
-  document.querySelector("#metric-best-label").textContent = `${highest.framework} · ${highest.model} · ${highest.technology}`;
   document.querySelector("#metric-comparisons").textContent = comparisons().length;
   document.querySelector("#metric-frameworks").textContent = new Set(comparisons().map((item) => item.framework)).size;
   document.querySelector("#metric-runs").textContent = comparisons().length * 2;
