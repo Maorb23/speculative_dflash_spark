@@ -1,6 +1,13 @@
-const state = { data: null, technology: "all", framework: "all", model: "all", selected: null };
+const state = { data: null, technology: "all", framework: "all", model: "all", sort: "speedup-desc", selected: null };
 const fmt = new Intl.NumberFormat("en-US", { maximumFractionDigits: 0 });
 const decimal = new Intl.NumberFormat("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+const sorters = {
+  "speedup-desc": (a, b) => b.speedup - a.speedup,
+  "speedup-asc": (a, b) => a.speedup - b.speedup,
+  "throughput-desc": (a, b) => b.speculative.output_tokens_per_second - a.speculative.output_tokens_per_second,
+  "latency-asc": (a, b) => a.speculative.p95_latency_s - b.speculative.p95_latency_s,
+  "model-asc": (a, b) => Number(a.model.match(/\d+/)?.[0] ?? 0) - Number(b.model.match(/\d+/)?.[0] ?? 0)
+};
 
 async function loadSummary() {
   const response = await fetch("data/summary.json");
@@ -14,7 +21,7 @@ function visibleComparisons() {
     (state.technology === "all" || item.technology === state.technology) &&
     (state.framework === "all" || item.framework === state.framework) &&
     (state.model === "all" || item.model === state.model)
-  );
+  ).sort(sorters[state.sort]);
 }
 function optionMarkup(items, label) {
   return `<option value="all">All ${label}</option>${items.map((item) => `<option value="${item}">${item}</option>`).join("")}`;
@@ -33,16 +40,40 @@ function renderFilters() {
     target.innerHTML = optionMarkup(items, label);
     target.value = state[property];
   });
+  document.querySelector("#sort-filter").value = state.sort;
+}
+function restoreURLState() {
+  const params = new URLSearchParams(window.location.search);
+  const validValues = {
+    technology: new Set(comparisons().map((item) => item.technology)),
+    framework: new Set(comparisons().map((item) => item.framework)),
+    model: new Set(comparisons().map((item) => item.model))
+  };
+  Object.entries(validValues).forEach(([property, values]) => {
+    const value = params.get(property);
+    if (value && values.has(value)) state[property] = value;
+  });
+  const sort = params.get("sort");
+  if (sort && sorters[sort]) state.sort = sort;
+}
+function syncURLState() {
+  const url = new URL(window.location.href);
+  ["technology", "framework", "model", "sort"].forEach((property) => {
+    const defaultValue = property === "sort" ? "speedup-desc" : "all";
+    if (state[property] === defaultValue) url.searchParams.delete(property);
+    else url.searchParams.set(property, state[property]);
+  });
+  window.history.replaceState({}, "", `${url.pathname}${url.search}${url.hash}`);
 }
 function latency(value) { return `${decimal.format(value)} s`; }
 function deltaPercent(ratio) { return `${ratio < 1 ? "↓" : "↑"} ${Math.abs((ratio - 1) * 100).toFixed(1)}%`; }
 function renderCards() {
   const target = document.querySelector("#comparison-grid");
   const entries = visibleComparisons();
-  target.innerHTML = entries.length ? entries.map((item) => {
+  target.innerHTML = entries.length ? entries.map((item, index) => {
     const isSelected = state.selected === item.id;
     const p95Class = item.latency_ratio_p95 > 1 ? "regression" : "improvement";
-    return `<article class="comparison-card ${isSelected ? "selected" : ""}" data-id="${item.id}" tabindex="0">
+    return `<article class="comparison-card ${isSelected ? "selected" : ""}" data-id="${item.id}" tabindex="0" style="--delay:${Math.min(index * 45, 270)}ms">
       <div class="card-topline"><span class="tag ${item.technology}">${item.technology}</span><span>${item.framework}</span></div>
       <h3>${item.model}</h3>
       <p class="card-context">${item.hardware} · ${item.prompts} prompts · c${item.concurrency}</p>
@@ -61,7 +92,7 @@ function renderChart() {
   const target = document.querySelector("#speedup-chart");
   const entries = visibleComparisons();
   const max = Math.max(...entries.map((item) => item.speedup), 1.75);
-  target.innerHTML = entries.length ? entries.map((item) => `<button class="chart-row ${state.selected === item.id ? "selected" : ""}" data-id="${item.id}" aria-label="Focus ${item.framework} ${item.model} ${item.technology}: ${decimal.format(item.speedup)} times baseline"><span class="chart-label"><b>${item.framework} · ${item.model}</b><small class="method ${item.technology}">${item.technology}</small></span><i><b class="${item.technology}" style="width:${(item.speedup / max) * 100}%"></b></i><strong>${decimal.format(item.speedup)}×</strong></button>`).join("") : "";
+  target.innerHTML = entries.length ? entries.map((item, index) => `<button class="chart-row" data-selected="${state.selected === item.id}" data-id="${item.id}" style="--delay:${Math.min(index * 35, 210)}ms" aria-label="Focus ${item.framework} ${item.model} ${item.technology}: ${decimal.format(item.speedup)} times baseline"><span class="chart-label"><b>${item.framework} · ${item.model}</b><small class="method ${item.technology}">${item.technology}</small></span><i><b class="${item.technology}" style="width:${(item.speedup / max) * 100}%"></b></i><strong>${decimal.format(item.speedup)}×</strong></button>`).join("") : "";
   target.querySelectorAll("button").forEach((button) => button.addEventListener("click", () => { state.selected = button.dataset.id; renderCards(); renderChart(); document.querySelector(`[data-id="${state.selected}"]`)?.focus(); }));
 }
 function renderSummary() {
@@ -73,10 +104,25 @@ function renderSummary() {
   document.querySelector("#metric-comparisons").textContent = comparisons().length;
   document.querySelector("#metric-frameworks").textContent = new Set(comparisons().map((item) => item.framework)).size;
   document.querySelector("#metric-runs").textContent = comparisons().length * 2;
+  document.querySelectorAll("#headline, #metric-speedup, #metric-speedup-label, .summary-band strong").forEach((element) => element.classList.add("metric-ready"));
 }
 function bindEvents() {
-  [["#technology-filter", "technology"], ["#framework-filter", "framework"], ["#model-filter", "model"]].forEach(([selector, property]) => {
-    document.querySelector(selector).addEventListener("change", (event) => { state[property] = event.target.value; state.selected = null; renderCards(); renderChart(); });
+  [["#technology-filter", "technology"], ["#framework-filter", "framework"], ["#model-filter", "model"], ["#sort-filter", "sort"]].forEach(([selector, property]) => {
+    document.querySelector(selector).addEventListener("change", (event) => {
+      state[property] = event.target.value;
+      state.selected = null;
+      syncURLState();
+      renderCards();
+      renderChart();
+    });
   });
 }
-loadSummary().then((data) => { state.data = data; renderSummary(); renderFilters(); bindEvents(); renderCards(); renderChart(); }).catch((error) => { document.querySelector("#headline").textContent = error.message; });
+loadSummary().then((data) => {
+  state.data = data;
+  restoreURLState();
+  renderSummary();
+  renderFilters();
+  bindEvents();
+  renderCards();
+  renderChart();
+}).catch((error) => { document.querySelector("#headline").textContent = error.message; });
