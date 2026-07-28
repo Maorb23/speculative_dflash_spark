@@ -3,83 +3,224 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Speculative Decoding Benchmarks | H100</title>
-    <meta name="description" content="Interactive H100 benchmark comparisons for DFlash and DSpark speculative decoding with SGLang and vLLM.">
+
+    <title>Inference Benchmark | Speculative Decoding on H100</title>
+
+    <meta
+      name="description"
+      content="Interactive H100 benchmark comparisons for DFlash and DSpark speculative decoding using SGLang and vLLM."
+    >
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Manrope:wght@600;700;800&display=swap"
+      rel="stylesheet"
+    >
+
     <link rel="stylesheet" href="assets/styles.css">
   </head>
+
   <body>
     <header class="site-header">
-      <a class="brand" href="#top" aria-label="Speculative decoding benchmarks home">SD / Bench</a>
-      <nav aria-label="Primary navigation">
+      <a
+        class="brand"
+        href="#top"
+        aria-label="Inference Benchmark home"
+      >
+        <span class="brand-mark" aria-hidden="true">IB</span>
+
+        <span class="brand-copy">
+          <strong>Inference Benchmark</strong>
+          <small>Speculative decoding performance</small>
+        </span>
+      </a>
+
+      <nav class="primary-nav" aria-label="Primary navigation">
         <a href="#comparisons">Comparisons</a>
         <a href="#methodology">Methodology</a>
-        <a href="data/summary.json">Data</a>
+        <a class="nav-data-link" href="data/summary.json">
+          View data
+        </a>
       </nav>
     </header>
 
     <main id="top">
       <section class="hero">
         <div class="hero-copy">
-          <p class="hero-meta">H100 · 100 prompts · 128 output tokens</p>
-          <h1>Speculative decoding,<br><span>measured end to end.</span></h1>
-          <p class="lede" id="headline">Loading benchmark summary…</p>
+          <p class="hero-meta">
+            NVIDIA H100
+            <span aria-hidden="true">•</span>
+            100 prompts
+            <span aria-hidden="true">•</span>
+            128 output tokens
+          </p>
+
+          <h1>
+            Speculative decoding,
+            <span>measured end to end.</span>
+          </h1>
+
+          <p class="lede" id="headline">
+            Loading benchmark summary…
+          </p>
+
           <div class="hero-actions">
-            <a class="button primary" href="#comparisons">Explore comparisons</a>
-            <a class="button" href="data/summary.json">Download source data</a>
+            <a class="button primary" href="#comparisons">
+              Explore comparisons
+            </a>
+
+            <a class="button secondary" href="data/summary.json">
+              Download source data
+            </a>
           </div>
         </div>
+
         <aside class="hero-proof" aria-label="Benchmark highlights">
-          <p class="proof-label">Best observed throughput gain</p>
-          <p class="proof-value" id="metric-speedup">—</p>
-          <p class="proof-detail" id="metric-speedup-label">Loading…</p>
+          <p class="proof-label">
+            Best observed throughput gain
+          </p>
+
+          <p class="proof-value" id="metric-speedup">
+            —
+          </p>
+
+          <p class="proof-detail" id="metric-speedup-label">
+            Loading…
+          </p>
         </aside>
       </section>
 
       <section class="summary-band" aria-label="Benchmark summary">
-        <div><strong id="metric-comparisons">—</strong><span>matched comparisons</span></div>
-        <div><strong id="metric-frameworks">—</strong><span>serving frameworks</span></div>
-        <div><strong id="metric-runs">—</strong><span>measured runs</span></div>
-        <div><strong>H100</strong><span>GPU platform</span></div>
+        <div class="summary-metric">
+          <strong id="metric-comparisons">—</strong>
+          <span>Matched comparisons</span>
+        </div>
+
+        <div class="summary-metric">
+          <strong id="metric-frameworks">—</strong>
+          <span>Serving frameworks</span>
+        </div>
+
+        <div class="summary-metric">
+          <strong id="metric-runs">—</strong>
+          <span>Measured runs</span>
+        </div>
+
+        <div class="summary-metric">
+          <strong>H100</strong>
+          <span>GPU platform</span>
+        </div>
       </section>
 
       <section id="comparisons" class="content-section">
         <div class="section-heading">
           <div>
-            <h2>Matched baseline vs speculative runs</h2>
+            <p class="section-eyebrow">Benchmark results</p>
+            <h2>Matched baseline and speculative runs</h2>
           </div>
-          <p>Throughput is output tokens per second. Each card compares runs with the same prompt set, output cap, and concurrency.</p>
+
+          <p>
+            Throughput is measured in output tokens per second.
+            Each card compares runs using the same prompts, output
+            limit, concurrency, framework, and hardware.
+          </p>
         </div>
 
         <div class="controls" aria-label="Comparison filters">
-          <label>Method <select id="technology-filter"></select></label>
-          <label>Framework <select id="framework-filter"></select></label>
-          <label>Model <select id="model-filter"></select></label>
+          <label>
+            <span>Method</span>
+            <select id="technology-filter"></select>
+          </label>
+
+          <label>
+            <span>Framework</span>
+            <select id="framework-filter"></select>
+          </label>
+
+          <label>
+            <span>Model</span>
+            <select id="model-filter"></select>
+          </label>
         </div>
-        <div id="comparison-grid" class="comparison-grid" aria-live="polite"></div>
+
+        <div
+          id="comparison-grid"
+          class="comparison-grid"
+          aria-live="polite"
+        ></div>
       </section>
 
       <section class="content-section chart-section">
         <div class="section-heading">
           <div>
+            <p class="section-eyebrow">Throughput analysis</p>
             <h2>Relative throughput by comparison</h2>
           </div>
-          <p>Each bar shows speculative throughput as a multiple of the paired baseline. Click a result card above to focus this view.</p>
+
+          <p>
+            Each bar shows speculative throughput as a multiple of
+            the paired baseline. Select a result card above to focus
+            this view.
+          </p>
         </div>
-        <div id="speedup-chart" class="speedup-chart" aria-live="polite"></div>
+
+        <div
+          id="speedup-chart"
+          class="speedup-chart"
+          aria-live="polite"
+        ></div>
       </section>
 
       <section id="methodology" class="content-section methodology">
-        <div>
-          <h2>A like-for-like serving comparison.</h2>
+        <div class="methodology-heading">
+          <p class="section-eyebrow">Methodology</p>
+          <h2>A controlled, like-for-like serving comparison.</h2>
         </div>
+
         <div class="method-grid">
-          <article><span>01</span><h3>Fixed workload</h3><p>100 prompts, a 128-token output limit, and concurrency 32 for every paired run.</p></article>
-          <article><span>02</span><h3>Paired reporting</h3><p>Baseline and speculative runs are reported together, including throughput and latency percentiles.</p></article>
-          <article><span>03</span><h3>Read the tail</h3><p>p50 and p95 are shown alongside speedup; a throughput gain does not hide a p95 regression.</p></article>
+          <article>
+            <span class="method-number">01</span>
+            <h3>Fixed workload</h3>
+            <p>
+              Every paired run uses 100 prompts, a 128-token output
+              limit, and concurrency 32.
+            </p>
+          </article>
+
+          <article>
+            <span class="method-number">02</span>
+            <h3>Paired reporting</h3>
+            <p>
+              Baseline and speculative results are reported together,
+              including throughput and latency percentiles.
+            </p>
+          </article>
+
+          <article>
+            <span class="method-number">03</span>
+            <h3>Tail-latency visibility</h3>
+            <p>
+              Median and p95 latency remain visible so throughput gains
+              do not obscure tail-latency regressions.
+            </p>
+          </article>
         </div>
       </section>
     </main>
-    <footer>Benchmark data updated <span id="updated">—</span> · Results from the supplied comparison logs.</footer>
+
+    <footer class="site-footer">
+      <span>
+        Benchmark data updated
+        <strong id="updated">—</strong>
+      </span>
+
+      <span>
+        Results generated from the supplied comparison logs.
+      </span>
+    </footer>
+
     <script src="assets/app.js"></script>
   </body>
 </html>
